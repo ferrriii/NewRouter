@@ -3,7 +3,7 @@ class NewRouterRoute {
 	public $method;
 	public $route;
 	public $func;
-	private $_pattern = [];
+	private $_pattern = array();
 	
 	public static function fromRouteStr($route) {
 		$route = trim($route);
@@ -63,9 +63,9 @@ class NewRouterRoute {
 }
 
 class NewRouter {
-	private $routes = [];
+	private $routes = array();
 	
-	public function use($route, $callback) {
+	public function route($route, $callback) {
 		$r = NewRouterRoute::fromRouteStr($route);
 		$r->func = $callback;
 		
@@ -95,7 +95,8 @@ class NewRouter {
 			}
 			$routeFound = true;
 			
-			$res = ($route->func)();
+			$func = $route->func;
+			$res = $func();
 			if ($res === NULL || $res === false) {
 				break;
 			}
