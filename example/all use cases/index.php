@@ -2,7 +2,7 @@
 require('../../newrouter.php');
 
 $router = new NewRouter();
-$router->route('', function(){
+$router->route(function(){
 	echo "this will be executed on all requests to any path<br>";
 	return true; // process next routes
 });

@@ -11,7 +11,7 @@ $router->route('GET /b', function(){
   echo "this is route b";
 });
 
-$router->route('', function(){
+$router->route(function(){
   echo "invalid route!";
 });
 
