@@ -123,6 +123,26 @@ equal("/a/:id: doesn't match /a/", preg_match('/' . $route->pattern() . '/i', '/
 equal("/a/:id: matches /a/b", preg_match('/' . $route->pattern() . '/i', '/a/b'), true);
 equal("/a/:id: doesn't match /a/b/z", preg_match('/' . $route->pattern() . '/i', '/a/b/z'), false);
 equal("/a/:id: doesn't match empty", preg_match('/' . $route->pattern() . '/i', ''), false);
+preg_match('/' . $route->pattern() . '/i', '/a/', $matches);
+equal("/a/:id: id is empty in /a/", $matches['id'], '');
+preg_match('/' . $route->pattern() . '/i', '/a/b', $matches);
+equal("/a/:id: id is b in /a/b", $matches['id'], 'b');
+
+
+$route = NewRouterRoute::fromRouteStr('/a/:id:/:name:');
+equal("/a/:id:/:name: route is /a/:id:/:name:", $route->route, '/a/:id:/:name:');
+equal("/a/:id:/:name: method is empty", $route->method, '');
+equal("/a/:id:/:name: doesn't match /", preg_match('/' . $route->pattern() . '/i', '/'), false);
+equal("/a/:id:/:name: doesn't match /a", preg_match('/' . $route->pattern() . '/i', '/a'), false);
+equal("/a/:id:/:name: doesn't match /a/", preg_match('/' . $route->pattern() . '/i', '/a/'), false);
+equal("/a/:id:/:name: doesn't match /a/b", preg_match('/' . $route->pattern() . '/i', '/a/b'), false);
+equal("/a/:id:/:name: matches /a/b/z", preg_match('/' . $route->pattern() . '/i', '/a/b/z'), true);
+equal("/a/:id:/:name: doesn't match empty", preg_match('/' . $route->pattern() . '/i', ''), false);
+preg_match('/' . $route->pattern() . '/i', '/a/123/abc', $matches);
+equal("/a/:id:/:name: id is 123 in /a/123/abc", $matches['id'], '123');
+equal("/a/:id:/:name: id is 123 in /a/123/abc", $matches[1], '123');
+equal("/a/:id:/:name: name is abc in /a/123/abc", $matches['name'], 'abc');
+equal("/a/:id:/:name: name is abc in /a/123/abc", $matches[1], 'abc');
 
 
 $route = NewRouterRoute::fromRouteStr('/a/*');
