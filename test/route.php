@@ -106,6 +106,13 @@ equal('empty matches /', preg_match('/' . $route->pattern() . '/i', '/'), true);
 equal('empty matches /a', preg_match('/' . $route->pattern() . '/i', '/a'), true);
 equal('empty matches empty', preg_match('/' . $route->pattern() . '/i', ''), true);
 
+$route = NewRouterRoute::fromRouteStr(null);
+equal('empty route is empty', $route->route, '');
+equal('empty method is empty', $route->method, '');
+equal('empty matches /', preg_match('/' . $route->pattern() . '/i', '/'), true);
+equal('empty matches /a', preg_match('/' . $route->pattern() . '/i', '/a'), true);
+equal('empty matches empty', preg_match('/' . $route->pattern() . '/i', ''), true);
+
 
 $route = NewRouterRoute::fromRouteStr('/a/:id:');
 equal("/a/:id: route is /a/:id:", $route->route, '/a/:id:');

@@ -6,6 +6,8 @@ class NewRouterRoute {
 	private $_pattern = array();
 	
 	public static function fromRouteStr($route) {
+		if (empty($route)) return new NewRouterRoute;
+		
 		$route = trim($route);
 		$route = str_replace("//","/", $route);
 		$routeIndex = strpos($route, "/");
@@ -39,7 +41,7 @@ class NewRouterRoute {
 	
 	private function routePattern($route = '*', $prefixRoute = '^') {
 		//translate route to regex
-		if ($route === '') {
+		if (empty($route)) {
 			$route =  '*';
 		}
 		
@@ -64,12 +66,29 @@ class NewRouterRoute {
 
 class NewRouter {
 	private $routes = array();
+
+	private function routeFromArgument($firstArgument) {
+		$type = gettype($firstArgument);
+		if ($type === 'string') return $firstArgument;
+		if ($type === 'object') return null;
+		if ($type === 'NULL') return '';
+		return false;
+	}
 	
-	public function route($route, $callback) {
-		$r = NewRouterRoute::fromRouteStr($route);
-		$r->func = $callback;
-		
-		$this->routes[] = $r;
+	public function route() {
+		$route = $this->routeFromArgument(func_get_arg(0));
+		$funcIndex = 1;
+		if ($route === null) {
+			$funcIndex = 0; // route is not defined, all arguments are middleware functions
+		} 
+
+		$totalArgs = func_num_args();
+		for ($i = $funcIndex; $i<$totalArgs; ++$i) {
+			$r = NewRouterRoute::fromRouteStr($route);
+			$r->func = func_get_arg($i);
+			
+			$this->routes[] = $r;			
+		}
 	}	
 	
 	public function dispatch($method = null, $path = null) {		

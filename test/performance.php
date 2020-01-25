@@ -7,6 +7,7 @@ require_once('../newrouter.php');
 $createRoute = function() {
 	NewRouterRoute::fromRouteStr('GET /');
 	NewRouterRoute::fromRouteStr('/');
+	NewRouterRoute::fromRouteStr(null);
 	NewRouterRoute::fromRouteStr('GET /a/b/c/d/e');
 	NewRouterRoute::fromRouteStr('GET /user/:id:');
 	NewRouterRoute::fromRouteStr('GET /*');
@@ -32,6 +33,7 @@ echo "compile 1 route time (u sec): " . iterate(50000, $routeCompilation)/5 . "\
 
 $setupRoutes = function (){
 	$router = new NewRouter();
+	$router->route(function(){});
 	$router->route('/', function(){});
 	$router->route('/a/b', function(){});
 	$router->route('/a/b/c/d/e/f', function(){});
@@ -45,7 +47,7 @@ $setupRoutes = function (){
 	$router->route('/cc/+', function(){});
 	$router->route('/dd/:id:', function(){});
 };
-echo "setup 1 route time (u sec): " . iterate(50000, $setupRoutes)/12 . "\n"; // 12 for 12 routes in for
+echo "setup 1 route time (u sec): " . iterate(50000, $setupRoutes)/13 . "\n"; // 13 for 13 routes in for
 
 
 $router = new NewRouter();
