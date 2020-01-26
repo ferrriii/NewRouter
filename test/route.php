@@ -140,9 +140,7 @@ equal("/a/:id:/:name: matches /a/b/z", preg_match('/' . $route->pattern() . '/i'
 equal("/a/:id:/:name: doesn't match empty", preg_match('/' . $route->pattern() . '/i', ''), false);
 preg_match('/' . $route->pattern() . '/i', '/a/123/abc', $matches);
 equal("/a/:id:/:name: id is 123 in /a/123/abc", $matches['id'], '123');
-equal("/a/:id:/:name: id is 123 in /a/123/abc", $matches[1], '123');
 equal("/a/:id:/:name: name is abc in /a/123/abc", $matches['name'], 'abc');
-equal("/a/:id:/:name: name is abc in /a/123/abc", $matches[1], 'abc');
 
 
 $route = NewRouterRoute::fromRouteStr('/a/*');
