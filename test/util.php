@@ -24,8 +24,10 @@ function iterate($times, $func) {
 }
 
 function AddStrAndReturn(&$str, $add, $return = true) {
-	return function() use (&$str, $add, $return) {
+	global $request;
+	return function($req) use (&$str, $add, $return, &$request) {
 		$str .= $add;
+		$request = $req;
 		return $return;
 	};
 }

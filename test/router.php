@@ -25,12 +25,12 @@ $router->route('POST /p/*/z', AddStrAndReturn($str, 'star'));
 $router->route('', AddStrAndReturn($str, '*'));
 $router->route('GET', AddStrAndReturn($str, 'GET'));
 $router->route('GET /multiple', AddStrAndReturn($str, 'm1'), AddStrAndReturn($str, 'm2'), AddStrAndReturn($str, 'm3'));
+$router->route('DELETE /delete/:name:', AddStrAndReturn($str, 'delete'));
 
 $str = '';
 $routeFound = $router->dispatch('GET', '/');
 equal('GET /', $str, '/slash*GET');
 equal('GET / route found', $routeFound, true);
-
 
 $str = '';
 $router->dispatch('POST', '/');
@@ -83,6 +83,7 @@ equal('GET /b', $str, '47*GET');
 $str = '';
 $router->dispatch('GET', '/b/a');
 equal('GET /b/a', $str, '47*GET');
+equal('GET /b/a param id is a', $request->params['id'], 'a');
 
 $str = '';
 $router->dispatch('GET', '/b/a/b');
@@ -128,6 +129,9 @@ equal('POST /z', $str, 'd');
 $str = '';
 $router->dispatch('GET', '/x/0/1');
 equal('GET /x/0/1', $str, '89*GET');
+equal('GET /x/0/1 param id is 0', $request->params['id'], '0');
+equal('GET /x/0/1 param name is 1', $request->params['name'], '1');
+
 
 $str = '';
 $router->dispatch('GET', '/x/11/1');
@@ -144,6 +148,12 @@ equal('POST /x/yy/zz/ww', $str, '*');
 $str = '';
 $router->dispatch('GET', '/multiple');
 equal('GET /multiple', $str, '*GETm1m2m3');
+
+$str = '';
+$router->dispatch('DELETE', '/delete/123');
+equal('DELETE /delete/123', $str, '*delete');
+equal('DELETE /delete/123 param name is 1', $request->params['name'], '123');
+
 
 $router = new NewRouter();
 $router->route(AddStrAndReturn($str, '*'));
