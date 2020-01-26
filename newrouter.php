@@ -105,17 +105,22 @@ class NewRouter {
 	private function execute($method, $path, $prefixPattern = '^') {
 
 		$routeFound = false;
+		$req = new stdClass();
+		$req->params = array();
 		foreach ($this->routes as $route) {
 			if (!empty($route->method) && $method !== $route->method) {
 				continue;
 			}
-			if (!preg_match('/' . $route->pattern($prefixPattern) . '/i', $path)) {
+			if (!preg_match('/' . $route->pattern($prefixPattern) . '/i', $path, $matches)) {
 				continue;
 			}
 			$routeFound = true;
+			$req->params = array_merge($req->params, $matches);
+			// TODO: uncomment below line
+			// $req->route = $route;
 			
 			$func = $route->func;
-			$res = $func();
+			$res = $func($req);
 			if ($res === NULL || $res === false) {
 				break;
 			}
