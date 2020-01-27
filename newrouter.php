@@ -1,8 +1,16 @@
 <?PHP
+abstract class NewRouterCallBackType
+{
+    const lambda = 0;
+    const router = 1;
+    const classmethod = 2;
+}
+
 class NewRouterRoute {
 	public $method;
 	public $route;
-	public $func;
+	private $callBack;
+	private $callBackType;
 	private $_pattern = array();
 	
 	public static function fromRouteStr($route) {
@@ -29,12 +37,32 @@ class NewRouterRoute {
 		return $r;
 	}
 	
+	public function setCallback($callBack) {
+		$this->callBack = $callBack;
+		$this->callBackType = NewRouterCallBackType::lambda;
+		//get_class($callBack);
+		if ($callBack instanceof NewRouter) {
+			$this->callBackType = NewRouterCallBackType::router;
+		}
+	}
+	
+	public function run(&$request, $prefixPattern, $method, $path) {
+		if ($this->callBackType === NewRouterCallBackType::lambda) {
+			$func = $this->callBack;
+			return $func($request);
+		} else if ($this->callBackType === NewRouterCallBackType::router) {
+			return $this->callBack->dispatch($method, $path, $prefixPattern);
+		} else if ($this->callBackType === NewRouterCallBackType::classmethod) {
+			// not implemented
+		}
+	}
+	
 	public function pattern($prefixPattern = '^') {
 		if (array_key_exists($prefixPattern, $this->_pattern)) {
 			return $this->_pattern[$prefixPattern];
 		}
 		
-		$this->_pattern[$prefixPattern] = $this->routePattern($this->route);
+		$this->_pattern[$prefixPattern] = $this->routePattern($this->route, $prefixPattern);
 		
 		return $this->_pattern[$prefixPattern];
 	}
@@ -42,7 +70,7 @@ class NewRouterRoute {
 	private function routePattern($route = '*', $prefixRoute = '^') {
 		//translate route to regex
 		if (empty($route)) {
-			$route =  '*';
+			$route = '*';
 		}
 		
 		$openEnd = false;
@@ -85,13 +113,13 @@ class NewRouter {
 		$totalArgs = func_num_args();
 		for ($i = $funcIndex; $i<$totalArgs; ++$i) {
 			$r = NewRouterRoute::fromRouteStr($route);
-			$r->func = func_get_arg($i);
+			$r->setCallback(func_get_arg($i));
 			
 			$this->routes[] = $r;			
 		}
 	}	
 	
-	public function dispatch($method = null, $path = null) {		
+	public function dispatch($method = null, $path = null, $prefixPattern = '^') {		
 		if ($method === null) {
 			$method = $_SERVER['REQUEST_METHOD'];
 		}
@@ -99,19 +127,19 @@ class NewRouter {
 			$path = $_SERVER['REQUEST_URI'];
 		}
 		
-		return $this->execute($method, $path);
+		return $this->execute($method, $path, $prefixPattern);
 	}
 
 	private function execute($method, $path, $prefixPattern = '^') {
-
 		$routeFound = false;
 		$req = new stdClass();
 		$req->params = array();
 		foreach ($this->routes as $route) {
 			if (!empty($route->method) && $method !== $route->method) {
-				continue;
+				continue; // method is not same as route method
 			}
-			if (!preg_match('/' . $route->pattern($prefixPattern) . '/i', $path, $matches)) {
+			$pattern = $route->pattern($prefixPattern);
+			if (!preg_match('/' . $pattern . '/i', $path, $matches)) {
 				continue;
 			}
 			$routeFound = true;
@@ -119,8 +147,7 @@ class NewRouter {
 			// TODO: uncomment below line
 			// $req->route = $route;
 			
-			$func = $route->func;
-			$res = $func($req);
+			$res = $route->run($req, $pattern, $method, $path);
 			if ($res === NULL || $res === false) {
 				break;
 			}
