@@ -340,3 +340,22 @@ equal('GET /invalid', $str, 'invalidRoute');
 $str = '';
 $router->dispatch('GET', '/user/invalid');
 equal('GET /user/invalid', $str, 'nouser');
+
+
+
+
+
+
+class Foo {
+	static public function bar() {
+		global $str;
+		$str = 'bar';
+	}
+}
+
+// test initialization
+$str='';
+$router = new NewRouter();
+$router->route('/', 'Foo::bar');
+$router->dispatch('GET', '/');
+equal('class::method', $str, 'bar');

@@ -1,4 +1,7 @@
 <?PHP
+/*
+https://github.com/ferrriii/NewRouter
+*/
 abstract class NewRouterCallBackType
 {
     const lambda = 0;
@@ -39,10 +42,12 @@ class NewRouterRoute {
 	
 	public function setCallback($callBack) {
 		$this->callBack = $callBack;
-		$this->callBackType = NewRouterCallBackType::lambda;
-		//get_class($callBack);
-		if ($callBack instanceof NewRouter) {
+		if ($callBack instanceof Closure) {
+			$this->callBackType = NewRouterCallBackType::lambda;
+		}else if ($callBack instanceof NewRouter) {
 			$this->callBackType = NewRouterCallBackType::router;
+		} else {
+			$this->callBackType = NewRouterCallBackType::classmethod;
 		}
 	}
 	
@@ -53,7 +58,7 @@ class NewRouterRoute {
 		} else if ($this->callBackType === NewRouterCallBackType::router) {
 			return $this->callBack->dispatch($method, $path, $prefixPattern);
 		} else if ($this->callBackType === NewRouterCallBackType::classmethod) {
-			// not implemented
+			return call_user_func($this->callBack, $request);
 		}
 	}
 	

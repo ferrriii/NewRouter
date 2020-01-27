@@ -45,8 +45,10 @@ $setupRoutes = function (){
 	$router->route('/bb/*', function(){});
 	$router->route('/cc/+', function(){});
 	$router->route('/dd/:id:', function(){});
+	$router->route('/ff', 'Foo::bar');
+	$router->route('/gg', $router);
 };
-echo "setup 1 route time (u sec): " . iterate(100000, $setupRoutes)/13 . "\n"; // 13 for 13 routes in for
+echo "setup 1 route time (u sec): " . iterate(100000, $setupRoutes)/15 . "\n"; // 15 for 15 routes in for
 
 
 $router = new NewRouter();
