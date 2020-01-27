@@ -187,15 +187,18 @@ $route = NewRouterRoute::fromRouteStr('XYZ /');
 equal('GET / route is /', $route->route, '/');
 equal('GET / method is XYZ', $route->method, 'XYZ');
 
-/*
 $routeA = NewRouterRoute::fromRouteStr('/user/*');
 $routeB = NewRouterRoute::fromRouteStr('/');
-//$routeB = NewRouterRoute::fromRouteStr('/a');
-echo $routeA->pattern($routeB->pattern()) . "\n";
+$routeC = NewRouterRoute::fromRouteStr('/a');
+$routeD = NewRouterRoute::fromRouteStr('/a/:key:');
 equal('/ after /user/* doesn\'t match /', preg_match('/' . $routeB->pattern($routeA->pattern()) . '/i', '/'), false);
 equal('/ after /user/* doesn\'t match /user', preg_match('/' . $routeB->pattern($routeA->pattern()) . '/i', '/user'), false);
 equal('/ after /user/* matches /user/', preg_match('/' . $routeB->pattern($routeA->pattern()) . '/i', '/user/'), true);
 equal('/ after /user/* doesn\'t match /user/a', preg_match('/' . $routeB->pattern($routeA->pattern()) . '/i', '/user/a'), false);
 equal('/ after /user/* doesn\'t match /user/b', preg_match('/' . $routeB->pattern($routeA->pattern()) . '/i', '/user/b'), false);
-*/
-
+equal('/a after /user/* matches /user/a', preg_match('/' . $routeC->pattern($routeA->pattern()) . '/i', '/user/a'), true);
+equal('/a after /user/* doesn\'t match /user/b', preg_match('/' . $routeC->pattern($routeA->pattern()) . '/i', '/user/b'), false);
+equal('/a after /user/* doesn\'t match /user/', preg_match('/' . $routeC->pattern($routeA->pattern()) . '/i', '/user/'), false);
+equal('/a/:key: after /user/* matches /user/a/21', preg_match('/' . $routeD->pattern($routeA->pattern()) . '/i', '/user/a/21'), true);
+equal('/a/:key: after /user/* doesn\'t match /user/b/', preg_match('/' . $routeD->pattern($routeA->pattern()) . '/i', '/user/b/'), false);
+equal('/a/:key: after /user/* doesn\'t match /user/', preg_match('/' . $routeD->pattern($routeA->pattern()) . '/i', '/user/'), false);

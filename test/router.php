@@ -26,6 +26,8 @@ $router->route('', AddStrAndReturn($str, '*'));
 $router->route('GET', AddStrAndReturn($str, 'GET'));
 $router->route('GET /multiple', AddStrAndReturn($str, 'm1'), AddStrAndReturn($str, 'm2'), AddStrAndReturn($str, 'm3'));
 $router->route('DELETE /delete/:name:', AddStrAndReturn($str, 'delete'));
+$router->route('PUT /f', AddStrAndReturn($str, 'put'));
+$router->route('POST /f', AddStrAndReturn($str, 'post'));
 
 $str = '';
 $routeFound = $router->dispatch('GET', '/');
@@ -154,6 +156,14 @@ $router->dispatch('DELETE', '/delete/123');
 equal('DELETE /delete/123', $str, '*delete');
 equal('DELETE /delete/123 param name is 1', $request->params['name'], '123');
 
+$str = '';
+$router->dispatch('PUT', '/f');
+equal('PUT /f', $str, '*put');
+
+$str = '';
+$router->dispatch('POST', '/f');
+equal('POST /f', $str, '*post');
+
 
 $router = new NewRouter();
 $router->route(AddStrAndReturn($str, '*'));
@@ -166,3 +176,124 @@ equal('GET /', $str, '*');
 $str = '';
 $router->dispatch('GET', '/a');
 equal('GET /a', $str, '*ab');
+
+
+
+
+
+
+$routerUser = new NewRouter();
+$routerUser->route(AddStrAndReturn($str, 'user'));
+$routerUser->route('GET /', AddStrAndReturn($str, 'default'));
+$routerUser->route('GET /profile', AddStrAndReturn($str, 'profile'));
+$routerUser->route('/allMethod', AddStrAndReturn($str, 'allMethod'));
+$routerUser->route('GET /post/:id:', AddStrAndReturn($str, 'post'));
+$routerUser->route('GET /image/*', AddStrAndReturn($str, 'image'));
+$router = new NewRouter();
+$router->route(AddStrAndReturn($str, '*'));
+$router->route('GET /user/*', $routerUser);
+$router->route('GET /', AddStrAndReturn($str, '/'));
+$router->route('GET /all/:name:/*', $routerUser);
+
+$str = '';
+$router->dispatch('GET', '/');
+equal('GET /', $str, '*/');
+
+$str = '';
+$router->dispatch('POST', '/user/');
+equal('POST /user/', $str, '*');
+
+$str = '';
+$router->dispatch('GET', '/user/');
+equal('GET /user/', $str, '*userdefault');
+
+$str = '';
+$router->dispatch('GET', '/user/profile');
+equal('GET /user/profile', $str, '*userprofile');
+
+$str = '';
+$router->dispatch('GET', '/user/allMethod');
+equal('GET /user/allMethod', $str, '*userallMethod');
+
+$str = '';
+$router->dispatch('GET', '/user/post/123');
+equal('GET /user/post/123', $str, '*userpost');
+equal('GET /user/post/123 param id is 123', $request->params['id'], '123');
+
+$str = '';
+$router->dispatch('GET', '/user/image/2020/new.jpg');
+equal('GET /user/image/2020/new.jpg', $str, '*userimage');
+
+$str = '';
+$router->dispatch('GET', '/all/111/');
+equal('GET /all/111/', $str, '*userdefault');
+equal('GET /all/111/ param name is 111', $request->params['name'], '111');
+
+$str = '';
+$router->dispatch('GET', '/all/111/post/999');
+equal('GET /all/111/post/999', $str, '*userpost');
+equal('GET /all/111/post/999 param name is 111', $request->params['name'], '111');
+equal('GET /all/111/post/999 param id is 999', $request->params['id'], '999');
+
+
+
+
+$routerUser = new NewRouter();
+$routerUser->route(AddStrAndReturn($str, 'user'));
+$routerUser->route('/', AddStrAndReturn($str, 'default'));
+$routerUser->route('POST /a', AddStrAndReturn($str, 'a'));
+$router = new NewRouter();
+$router->route('GET /user/*', $routerUser);
+
+$str = '';
+$router->dispatch('GET', '/user/');
+equal('GET /user/', $str, 'userdefault');
+
+$str = '';
+$router->dispatch('POST', '/user/a');
+equal('POST /user/a', $str, '');
+
+
+
+
+$routerUser = new NewRouter();
+$routerUser->route(AddStrAndReturn($str, 'user'));
+$routerUser->route('GET /', AddStrAndReturn($str, 'default'));
+$routerUser->route('POST /a', AddStrAndReturn($str, 'a'));
+$router = new NewRouter();
+$router->route('/user/*', $routerUser);
+
+$str = '';
+$router->dispatch('GET', '/user/');
+equal('GET /user/', $str, 'userdefault');
+
+$str = '';
+$router->dispatch('POST', '/user/a');
+equal('POST /user/a', $str, 'usera');
+
+
+
+
+$routerWeblog = new NewRouter();
+$routerWeblog->route(AddStrAndReturn($str, 'weblog'));
+$routerWeblog->route('GET /', AddStrAndReturn($str, '/'));
+$routerWeblog->route('GET /post/:id:', AddStrAndReturn($str, 'post'));
+$routerUser = new NewRouter();
+$routerUser->route(AddStrAndReturn($str, 'user'));
+$routerUser->route('GET /', AddStrAndReturn($str, 'slash'));
+$routerUser->route('GET /weblog/*', $routerWeblog);
+$router = new NewRouter();
+$router->route('/user/*', $routerUser);
+
+$str = '';
+$router->dispatch('GET', '/user/');
+equal('GET /user/', $str, 'userslash');
+
+$str = '';
+$router->dispatch('GET', '/user/weblog/');
+equal('GET /user/weblog/', $str, 'userweblog/');
+
+$str = '';
+$router->dispatch('GET', '/user/weblog/post/1');
+equal('GET /user/weblog/post/1', $str, 'userweblogpost');
+equal('GET /user/weblog/post/1 param id is 1', $request->params['id'], '1');
