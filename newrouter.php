@@ -131,7 +131,7 @@ class NewRouter {
 	}
 
 	private function execute($method, $path, $prefixPattern = '^') {
-		$routeFound = false;
+		$routeFound = null; // no route found
 		$req = new stdClass();
 		$req->params = array();
 		foreach ($this->routes as $route) {
@@ -142,14 +142,14 @@ class NewRouter {
 			if (!preg_match('/' . $pattern . '/i', $path, $matches)) {
 				continue;
 			}
-			$routeFound = true;
+			$routeFound = true; // route found and routing should be continued
 			$req->params = array_merge($req->params, $matches);
 			// TODO: uncomment below line
 			// $req->route = $route;
 			
 			$res = $route->run($req, $pattern, $method, $path);
 			if ($res === NULL || $res === false) {
-				break;
+				return false; // route found and further routing should be stopped
 			}
 		}
 		

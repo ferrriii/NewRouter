@@ -273,7 +273,6 @@ equal('POST /user/a', $str, 'usera');
 
 
 
-
 $routerWeblog = new NewRouter();
 $routerWeblog->route(AddStrAndReturn($str, 'weblog'));
 $routerWeblog->route('GET /', AddStrAndReturn($str, '/'));
@@ -297,3 +296,47 @@ $str = '';
 $router->dispatch('GET', '/user/weblog/post/1');
 equal('GET /user/weblog/post/1', $str, 'userweblogpost');
 equal('GET /user/weblog/post/1 param id is 1', $request->params['id'], '1');
+
+
+
+$routerUser = new NewRouter();
+$routerUser->route('GET /', AddStrAndReturn($str, 'default'));
+$routerUser->route(AddStrAndReturn($str, 'nouser'));
+$router = new NewRouter();
+$router->route('/user/*', $routerUser);
+$router->route(AddStrAndReturn($str, 'invalidRoute'));
+
+$str = '';
+$router->dispatch('GET', '/user/');
+equal('GET /user/', $str, 'defaultnouserinvalidRoute');
+
+$str = '';
+$router->dispatch('GET', '/invalid');
+equal('GET /invalid', $str, 'invalidRoute');
+
+$str = '';
+$router->dispatch('GET', '/user/invalid');
+equal('GET /user/invalid', $str, 'nouserinvalidRoute');
+
+
+
+
+
+$routerUser = new NewRouter();
+$routerUser->route('GET /', AddStrAndReturn($str, 'default', false));
+$routerUser->route(AddStrAndReturn($str, 'nouser', false));
+$router = new NewRouter();
+$router->route('/user/*', $routerUser);
+$router->route(AddStrAndReturn($str, 'invalidRoute', false));
+
+$str = '';
+$router->dispatch('GET', '/user/');
+equal('GET /user/', $str, 'default');
+
+$str = '';
+$router->dispatch('GET', '/invalid');
+equal('GET /invalid', $str, 'invalidRoute');
+
+$str = '';
+$router->dispatch('GET', '/user/invalid');
+equal('GET /user/invalid', $str, 'nouser');
