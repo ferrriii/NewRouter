@@ -102,7 +102,7 @@ $worstCaseSetup = function() {
 	$router->route('/dd/:id:', function(){});
 	$router->route('/ee/:id:', function(){});
 	$router->route('/ff/*', function(){});
-	$router->dispatch('GET', '/dd/1'); // last match (worst case)
+	$router->dispatch('GET', '/ff/1'); // last match (worst case)
 };
 echo "20 routes & match last route, execution time (u sec): " . iterate(100000, $worstCaseSetup) . "\n";
 
@@ -128,6 +128,6 @@ $worstCaseSetup = function() {
 	$router->route('/dd/:id:', function(){});
 	$router->route('/ee/:id:', function(){});
 	$router->route('/ff/*', function(){});
-	$router->dispatch('GET', '/'); // last match (worst case)
+	$router->dispatch('GET', '/'); // first match (best case)
 };
 echo "20 routes & match first route, execution time (u sec): " . iterate(100000, $worstCaseSetup) . "\n";
