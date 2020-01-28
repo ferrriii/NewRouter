@@ -90,7 +90,7 @@ $router->route('GET /', 'Foo::bar');
 ```
 See [Prefixing Routes](#prefixing-routes-grouping) for router instance as callback example.
 ### Callback return value
-Return values of callback can change routing behavior. An explicit `True` tells NewRouter to continue trying to match next routes.
+Return value of callback can change routing behavior. An explicit `True` tells NewRouter to continue trying to match next routes.
 An implicit `False` or `Null` means next routes should be stopped.
 
 *Note:* Not returning anything inside a callback is same as returning `Null`.
@@ -100,6 +100,7 @@ An instance of `stdClass` will be passed to callbacks when a route is matched. B
 | Property | Description |
 | -------- | ------------ |
 | params   | An associative array where keys are captured parameters when using parameterized routes. See [Parameterized routing](#parameterized-route) for example. |
+
 *Note:* Callbacks can capture `$request` by reference and manipulate it. See [Middleware](#middleware) for more.
 ### Multiple callbacks for a route
 A route can have multiple callbacks. Callbacks will be executed in the same order they are added.
