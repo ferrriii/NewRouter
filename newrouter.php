@@ -131,9 +131,7 @@ class NewRouter {
 		if ($path === null) {
 			$path = $_SERVER['REQUEST_URI'];
 		}
-		if (strpos($path, '?')) {
-			$path = strtok($_SERVER["REQUEST_URI"],'?');
-		}
+		$path = strtok($path,'?');
 		
 		return $this->execute($method, $path, $prefixPattern);
 	}
