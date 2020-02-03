@@ -164,6 +164,10 @@ $str = '';
 $router->dispatch('POST', '/f');
 equal('POST /f', $str, '*post');
 
+$str = '';
+$router->dispatch('POST', '/f?query=123');
+equal('POST /f', $str, '*post');
+
 
 $router = new NewRouter();
 $router->route(AddStrAndReturn($str, '*'));
