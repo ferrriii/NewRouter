@@ -100,6 +100,7 @@ An instance of `stdClass` will be passed to callbacks when a route is matched. B
 | Property | Description |
 | -------- | ------------ |
 | params   | An associative array where keys are captured parameters when using parameterized routes. See [Parameterized routing](#parameterized-route) for example. |
+| url      | The url part that route has matched. |
 
 *Note:* Callbacks can capture `$request` by reference and manipulate it. See [Middleware](#middleware) for more.
 ### Multiple callbacks for a route
