@@ -336,6 +336,8 @@ $router->route(AddStrAndReturn($str, 'invalidRoute', false));
 $str = '';
 $router->dispatch('GET', '/user/');
 equal('GET /user/', $str, 'default');
+equal('GET /user/ url is /user/', $request->url, '/user/');
+
 
 $str = '';
 $router->dispatch('GET', '/invalid');
@@ -344,6 +346,8 @@ equal('GET /invalid', $str, 'invalidRoute');
 $str = '';
 $router->dispatch('GET', '/user/invalid');
 equal('GET /user/invalid', $str, 'nouser');
+equal('GET /user/invalid url is /user/', $request->url, '/user/');
+
 
 
 
@@ -363,3 +367,26 @@ $router = new NewRouter();
 $router->route('/', 'Foo::bar');
 $router->dispatch('GET', '/');
 equal('class::method', $str, 'bar');
+
+
+
+
+// test matched url ($request->url)
+$router = new NewRouter();
+$router->route('/public/*', AddStrAndReturn($str, '/'));
+$str = '';
+$router->dispatch('GET', '/public/');
+equal('GET /public/ url is /public/', $request->url, '/public/');
+$str = '';
+$router->dispatch('GET', '/public/a');
+equal('GET /public/a url is /public/', $request->url, '/public/');
+$str = '';
+$router->dispatch('GET', '/public/a/b');
+equal('GET /public/a/b url is /public/', $request->url, '/public/');
+
+
+$router = new NewRouter();
+$router->route('/', AddStrAndReturn($str, '/'));
+$str = '';
+$router->dispatch('GET', '/');
+equal('GET / url is /', $request->url, '/');
