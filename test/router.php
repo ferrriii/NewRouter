@@ -232,6 +232,7 @@ $str = '';
 $router->dispatch('GET', '/all/111/');
 equal('GET /all/111/', $str, '*userdefault');
 equal('GET /all/111/ param name is 111', $request->params['name'], '111');
+equal('GET /all/111/ path is /all/111/', $request->path, '/all/111/');
 
 $str = '';
 $router->dispatch('GET', '/all/111/post/999');
@@ -300,6 +301,7 @@ $str = '';
 $router->dispatch('GET', '/user/weblog/post/1');
 equal('GET /user/weblog/post/1', $str, 'userweblogpost');
 equal('GET /user/weblog/post/1 param id is 1', $request->params['id'], '1');
+equal('GET /user/weblog/post/1 path is /user/weblog/post/1', $request->path, '/user/weblog/post/1');
 
 
 
@@ -337,6 +339,7 @@ $str = '';
 $router->dispatch('GET', '/user/');
 equal('GET /user/', $str, 'default');
 equal('GET /user/ url is /user/', $request->url, '/user/');
+equal('GET /user/ path is /user/', $request->path, '/user/');
 
 
 $str = '';
@@ -347,6 +350,7 @@ $str = '';
 $router->dispatch('GET', '/user/invalid');
 equal('GET /user/invalid', $str, 'nouser');
 equal('GET /user/invalid url is /user/', $request->url, '/user/');
+equal('GET /user/invalid path is /user/invalid', $request->path, '/user/invalid');
 
 
 
@@ -377,12 +381,15 @@ $router->route('/public/*', AddStrAndReturn($str, '/'));
 $str = '';
 $router->dispatch('GET', '/public/');
 equal('GET /public/ url is /public/', $request->url, '/public/');
+equal('GET /public/ path is /public/', $request->path, '/public/');
 $str = '';
 $router->dispatch('GET', '/public/a');
 equal('GET /public/a url is /public/', $request->url, '/public/');
+equal('GET /public/a path is /public/a', $request->path, '/public/a');
 $str = '';
 $router->dispatch('GET', '/public/a/b');
 equal('GET /public/a/b url is /public/', $request->url, '/public/');
+equal('GET /public/a/b path is /public/a/b', $request->path, '/public/a/b');
 
 
 $router = new NewRouter();

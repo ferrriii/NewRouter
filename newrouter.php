@@ -151,6 +151,7 @@ class NewRouter {
 			$routeFound = true; // route found and routing should be continued
 			$req->params = array_merge($req->params, $matches);
 			$req->url = $matches[0];
+			$req->path = $path;
 			// TODO: uncomment below line
 			// $req->route = $route;
 			
