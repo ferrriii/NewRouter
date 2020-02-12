@@ -1,6 +1,7 @@
 <?PHP
 require('route.php');
 require('router.php');
+require('static.php');
 require('performance.php');
 
 echo "\ntests finished\n" .
