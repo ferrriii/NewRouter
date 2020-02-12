@@ -19,6 +19,7 @@ a simple, fast and powerful PHP router.
 - [Prefixing Routes (grouping)](#prefixing-routes-grouping)
 - [Middleware](#middleware)
 - [No Match](#no-match)
+- [Serving Static Files](#serving-static-files)
 - [Examples](#examples)
 - [Tests](#tests)
 
@@ -176,6 +177,28 @@ $route->route(function() {
 	echo 'invalid route';
 });
 ```
+## Serving Static Files
+To serve static files such as images, CSS files, and JavaScript files, use the `NewRouterStatic::serve` method. You just need to include `newrouterstatic.php` and call `NewRouterStatic::serve` as callback for a route. The function signature is:
+```php
+NewRouterStatic::serve($root, [$options]);
+```
+For example, use the following code to serve static files in a directory named asset for routes starting with /public/:
+```php
+require('newrouterstatic.php');
+
+$router->route('/public/*', NewRouterStatic::serve('./asset/'));
+```
+Above  example will map all routes to virtual path `/public/*` to static files under `./asset/` directory. For example the route `/public/logo.jpg` will be mapped as `/asset/logo.jpg`.
+
+*Note:* You can have several static routes.
+### Options
+The second argument of `NewRouterStatic::serve` can be an assosiative array of options. The following table describes the keys for `options` argument
+
+| Key | Description | Default |
+| --- | --------- | --------- |
+| lastModified | A boolean value specifying if last-modified HTTP header should be provided | `true` |
+| etag | a Boolean value specifying if etag HTTP header should be provided | `true` |
+
 ## Examples
 See example directory for more detailed examples.
 ## Tests
