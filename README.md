@@ -211,3 +211,10 @@ Run performance tests only
 ```
 php performance.php
 ```
+
+## TODO
+ - import/export routes
+ - regex patterns
+ - numbers only pattern
+ - JSON parser middleware
+ - CORS middleware
